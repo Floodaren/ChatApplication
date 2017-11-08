@@ -1,17 +1,33 @@
 import { Component } from '@angular/core';
+import { Content } from 'ionic-angular';
 import { NavController } from 'ionic-angular';
 import CryptoJS from 'crypto-js';
+import io from "socket.io-client";
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
-  
-  
+  message:any
+  messages:any = [];
+  socket = io("http://localhost:3000");
   constructor(public navCtrl: NavController) {
+    this.socket.on('recieveChatMessages', function(data){
+      
+      this.messages.push(data.messageToEveryone);   
+    }.bind(this));
+    
   }
 
+
+
+  submitMessage()
+  {
+    this.socket.emit('sendMessage', {message: this.message});
+    this.message = "";
+  }
+  
 }
 
     /*

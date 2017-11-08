@@ -34,6 +34,9 @@ io.on('connection', function(socket){
       }
     }); 
   });
+  socket.on('sendMessage', function(msg){
+    io.sockets.emit('recieveChatMessages', {messageToEveryone: msg.message});
+  });
 });
 
 var connection = mysql.createConnection({

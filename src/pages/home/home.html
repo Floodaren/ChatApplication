@@ -1,10 +1,28 @@
+
 <ion-header>
   <ion-navbar>
     <ion-title>Home</ion-title>
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <h2>Chat application</h2>
-  
-</ion-content>
+
+
+  <ion-content>
+      <ion-list *ngFor="let item of messages" id="messageList"> 
+              <ion-item>
+              <p>{{username}}: {{item}}</p>
+              </ion-item>
+      </ion-list>
+      <div id="sendAndMessage">
+          <ion-input id="messageText" type="text" placeholder="Meddelande" [(ngModel)]="message"></ion-input>
+          <button id="messageSendButton" ion-button color="light" (click)="this.submitMessage()">Skicka</button>
+      </div>
+  </ion-content>
+
+
+
+
+
+
+
+

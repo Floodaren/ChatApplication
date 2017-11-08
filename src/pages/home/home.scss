@@ -1,3 +1,25 @@
 page-home {
+    #messageList
+    {   
+        
+    }
 
+    #messageText
+    {
+        display: inline-block;
+        width: 81%;
+    }
+    #messageSendButton
+    {
+        font-size: 1%;
+        margin-bottom: 2%;
+        display: inline-block;
+    }
+
+    #sendAndMessage
+    { 
+        margin: 2px;      
+        border: 1px solid black;
+        border-radius: 2px;       
+    }
 }
