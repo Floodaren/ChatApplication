@@ -7,9 +7,15 @@ import CryptoJS from 'crypto-js';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  x = 3;
+  
   
   constructor(public navCtrl: NavController) {
+  }
+
+}
+
+    /*
+    Encrypt with SHA256 and the later check if both encrypted strings are equal.
     var sha256 = CryptoJS.SHA256("hejsan");
     var sha2562 = CryptoJS.SHA256("hejsadsan");
     var matchorNot:boolean = false;
@@ -29,11 +35,11 @@ export class HomePage {
     {
       console.log("inloggad");
     }
-    
+    */
 
+    /*
+    Encrypt with AES, decrypt and get the decrypted message.
     var hejsan = CryptoJS.AES.encrypt('haha',"myKey");
     var decryptText =CryptoJS.AES.decrypt(hejsan.toString(), 'myKey');
     this.x = decryptText.toString(CryptoJS.enc.Utf8)
-  }
-
-}
+    */

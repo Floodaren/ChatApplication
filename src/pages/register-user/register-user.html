@@ -1,0 +1,20 @@
+<ion-header>
+  <ion-navbar color="primary">
+    <ion-title>Registrera</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content id="LogInForm">  
+  <h2>Fyll i dina uppgifter nedan</h2>
+  <ion-item>
+    <ion-label floating>Username</ion-label>
+    <ion-input type="text" [(ngModel)]="username"></ion-input>
+  </ion-item>
+        
+  <ion-item>
+    <ion-label floating>Password</ion-label>
+    <ion-input type="password" [(ngModel)]="password"></ion-input>
+  </ion-item>
+  <button ion-button round (click)="this.handleSubmit()" id="LogInButton">Registrera</button>
+</ion-content>
