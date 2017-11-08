@@ -1,31 +1,59 @@
-import { Component } from '@angular/core';
-import { Content } from 'ionic-angular';
-import { NavController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, Content } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 import CryptoJS from 'crypto-js';
 import io from "socket.io-client";
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild(Content) content: Content;
   message:any
   messages:any = [];
+  username:any;
   socket = io("http://localhost:3000");
-  constructor(public navCtrl: NavController) {
-    this.socket.on('recieveChatMessages', function(data){
-      
-      this.messages.push(data.messageToEveryone);   
+  constructor(public navCtrl: NavController, private storage: Storage, private alertCtrl: AlertController) {
+
+    this.socket.on('recieveChatMessages', function(data)
+    {
+      this.messages.push(data);
+      this.content.scrollToBottom();   
     }.bind(this));
     
   }
 
-
-
-  submitMessage()
+  async submitMessage()
   {
-    this.socket.emit('sendMessage', {message: this.message});
-    this.message = "";
+    await this.getUserName();
+    if (this.message == "" || this.message == undefined)
+    {
+      this.presentAlert();
+    }
+    else 
+    {
+      this.socket.emit('sendMessage', {message: this.message, username: this.username});
+      this.message = "";
+      this.content.scrollToBottom();   
+    }
+  }
+
+  async getUserName()
+  {
+    await this.storage.get('userName').then((val) => { 
+      this.username = val;
+    });
+  }
+
+  presentAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Inget meddelande',
+      subTitle: 'Du har inte skrivit någon text, försök igen',
+      buttons: ['OK']
+    });
+    alert.present();
   }
   
 }
