@@ -37,6 +37,7 @@ export class RegisterUserPage {
         if (data.successOrNot === "true")
         {
           this.app.getRootNav().setRoot(TabsPage);
+          this.presentAlert("Lyckades", "Ditt konto är nu skapat, vänligen logga in");
         }
         else 
         {
