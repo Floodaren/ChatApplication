@@ -40,13 +40,13 @@ io.on('connection', function(socket){
     io.sockets.emit('recieveChatMessages', {messageToEveryone: msg.message, messageUsername: msg.username});
   });
   socket.on('registerUser', function(msg){
-    console.log(msg);
+    var userNameToLower = msg.username.toLowerCase();
     userDidMatch = false;
     connection.query('SELECT * FROM Users', 
     function(error,result)
     {
       result.forEach(function(element) {
-        if (element.Username == msg.username)
+        if (element.Username == userNameToLower)
         {
           userDidMatch = true;
           socket.emit('userRegisterd', {successOrNot: "false"});
@@ -56,7 +56,8 @@ io.on('connection', function(socket){
 
     if (userDidMatch == false)
     {
-      connection.query('INSERT INTO Users (Username,Password) VALUES ("' + msg.username + '","' + msg.password + '")',
+      
+      connection.query('INSERT INTO Users (Username,Password) VALUES ("' + userNameToLower + '","' + msg.password + '")',
       function(error, result){
         if (result == 0)
         {
