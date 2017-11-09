@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import io from "socket.io-client";
 import { App } from 'ionic-angular';
-import { LoginPage } from '../login/login';
+import { TabsPage } from '../tabs/tabs';
 import { AlertController } from 'ionic-angular';
+import CryptoJS from 'crypto-js';
 
 @IonicPage()
 @Component({
@@ -25,11 +26,17 @@ export class RegisterUserPage {
     }
     else 
     {
-      this.socket.emit('registerUser', {username: this.username, password: this.password});
+      var encryptedPassword = CryptoJS.SHA256(this.password);
+      var passwordToDb = "";
+      encryptedPassword.words.forEach(element => {
+        var convertToString = String(element);
+        passwordToDb += convertToString;
+      });
+      this.socket.emit('registerUser', {username: this.username, password: passwordToDb});
       this.socket.on('userRegisterd', function(data){
         if (data.successOrNot === "true")
         {
-          this.app.getRootNav().setRoot(LoginPage);
+          this.app.getRootNav().setRoot(TabsPage);
         }
         else 
         {

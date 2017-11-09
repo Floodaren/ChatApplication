@@ -1,7 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, Content } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
-import CryptoJS from 'crypto-js';
 import io from "socket.io-client";
 import { Storage } from '@ionic/storage';
 

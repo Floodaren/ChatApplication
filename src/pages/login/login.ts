@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage';
 import { App } from 'ionic-angular';
 import io from "socket.io-client";
 import { TabsPage } from '../tabs/tabs';
+import CryptoJS from 'crypto-js';
 
 
 @IonicPage()
@@ -22,7 +23,13 @@ export class LoginPage {
 
   handleSubmit()
   {
-    this.socket.emit('loginUser', {username: this.username, password: this.password});
+    var encryptedPassword = CryptoJS.SHA256(this.password);
+    var passwordToDb = "";
+    encryptedPassword.words.forEach(element => {
+      var convertToString = String(element);
+      passwordToDb += convertToString;
+    });
+    this.socket.emit('loginUser', {username: this.username, password: passwordToDb});
     this.socket.on('loggedInOrNot', function(data)
     {
       if (data.length == 0)
