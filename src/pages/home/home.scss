@@ -7,24 +7,25 @@ page-home {
     #messageText
     {
         display: inline-block;
-        width: 81%;
+
     }
     #messageSendButton
     {
         font-size: 1%;
-        margin-bottom: 2%;
-        display: inline-block;
+        margin-top: 20%;
+        height: 25px;
+        
     }
 
     #sendAndMessage
     {
         
         position: fixed;
-        bottom: 8%;
+        bottom: 10%;
         width: 100%;
         margin: 2px;
         opacity: 100%;
-        background: grey;      
+        background: white;      
         border: 1px solid black;
         border-radius: 2px;       
     }

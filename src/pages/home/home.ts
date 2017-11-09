@@ -20,9 +20,13 @@ export class HomePage {
     this.socket.on('recieveChatMessages', function(data)
     {
       this.messages.push(data);
-      this.content.scrollToBottom();   
+      //this.content.scrollToBottom();   
     }.bind(this));
-    
+
+    this.socket.on('disconnect', function(data){
+      console.log(data);
+      this.messages.push(data.messageToEveryone);
+    }.bind(this));
   }
 
   async submitMessage()
@@ -36,7 +40,7 @@ export class HomePage {
     {
       this.socket.emit('sendMessage', {message: this.message, username: this.username});
       this.message = "";
-      this.content.scrollToBottom();   
+      //this.content.scrollToBottom();   
     }
   }
 

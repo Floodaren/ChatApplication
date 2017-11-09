@@ -1,12 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the RegisterUserPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import io from "socket.io-client";
+import { App } from 'ionic-angular';
+import { LoginPage } from '../login/login';
+import { AlertController } from 'ionic-angular';
 
 @IonicPage()
 @Component({
@@ -14,12 +11,43 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'register-user.html',
 })
 export class RegisterUserPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  socket = io("http://localhost:3000");
+  username:any;
+  password:any;
+  constructor(public navCtrl: NavController, public navParams: NavParams, private app:App, private alertCtrl: AlertController) {
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad RegisterUserPage');
+  handleSubmit()
+  {
+    if (this.username == undefined || this.password == undefined || this.username == "" || this.password == "")
+    {
+      this.presentAlert("Fel","Något av fälten är tomma, försök igen");
+    }
+    else 
+    {
+      this.socket.emit('registerUser', {username: this.username, password: this.password});
+      this.socket.on('userRegisterd', function(data){
+        if (data.successOrNot === "true")
+        {
+          this.app.getRootNav().setRoot(LoginPage);
+        }
+        else 
+        {
+          this.presentAlert("Fel", "Användaren finns redan, försök igen");
+          this.username = "";
+          this.password = "";
+        }
+      }.bind(this));
+    }
+  }
+
+  presentAlert(inputTitle, inputSubtitle) {
+    let alert = this.alertCtrl.create({
+      title: inputTitle,
+      subTitle: inputSubtitle,
+      buttons: ['OK']
+    });
+    alert.present();
   }
 
 }

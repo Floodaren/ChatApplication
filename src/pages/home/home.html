@@ -8,16 +8,22 @@
   <ion-content>
     <div id="messageList">
       <ion-list *ngFor="let item of messages" > 
-              <ion-item>
-              <p>{{item.messageUsername}}:</p>
-              <p>{{item.messageToEveryone}}</p> 
-              </ion-item>
+        <ion-item>
+          <p>{{item.messageUsername}}:</p>
+          <p>{{item.messageToEveryone}}</p> 
+        </ion-item>
       </ion-list>
     </div>
-      <div id="sendAndMessage">
-          <ion-input id="messageText" type="text" placeholder="Meddelande" [(ngModel)]="message"></ion-input>
-          <button id="messageSendButton" ion-button color="light" (click)="this.submitMessage()">Skicka</button>
-      </div>
+      <ion-grid id="sendAndMessage">
+        <ion-row>
+          <ion-col col-10>
+            <ion-input id="messageText" type="text" placeholder="Meddelande" [(ngModel)]="message"></ion-input>
+          </ion-col>
+          <ion-col col-2>
+            <button id="messageSendButton" ion-button color="light" (click)="this.submitMessage()">Skicka</button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
   </ion-content>
 
 

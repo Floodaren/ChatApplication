@@ -17,10 +17,12 @@ http.listen(3000, function(){
 });
 
 io.on('connection', function(socket){
-  console.log("A user has connected");
+  socket.on('disconnect', function(){
+    io.sockets.emit('disconnect', {messageToEveryone: "A user has disconnected"})
+  });
   socket.on('loginUser', function(msg)
   {
-    console.log(msg);
+    
     connection.query('SELECT Id,Username FROM Users WHERE Username = ' + "'" + msg.username + "' AND Password = '" + msg.password + "'" ,
     function(error, result){
       if (result == 0)
@@ -36,6 +38,36 @@ io.on('connection', function(socket){
   });
   socket.on('sendMessage', function(msg){
     io.sockets.emit('recieveChatMessages', {messageToEveryone: msg.message, messageUsername: msg.username});
+  });
+  socket.on('registerUser', function(msg){
+    console.log(msg);
+    userDidMatch = false;
+    connection.query('SELECT * FROM Users', 
+    function(error,result)
+    {
+      result.forEach(function(element) {
+        if (element.Username == msg.username)
+        {
+          userDidMatch = true;
+          socket.emit('userRegisterd', {successOrNot: "false"});
+        }
+      }, this);
+    });
+
+    if (userDidMatch == false)
+    {
+      connection.query('INSERT INTO Users (Username,Password) VALUES ("' + msg.username + '","' + msg.password + '")',
+      function(error, result){
+        if (result == 0)
+        {
+          socket.emit('userRegisterd', {successOrNot: "false"});
+        }
+        else
+        {
+          socket.emit('userRegisterd', {successOrNot: "true"});
+        }
+      });
+    }
   });
 });
 
