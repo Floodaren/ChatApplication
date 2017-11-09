@@ -52,23 +52,21 @@ io.on('connection', function(socket){
           socket.emit('userRegisterd', {successOrNot: "false"});
         }
       }, this);
+      if (userDidMatch == false)
+      {     
+        connection.query('INSERT INTO Users (Username,Password) VALUES ("' + userNameToLower + '","' + msg.password + '")',
+        function(error, result){
+          if (result == 0)
+          {
+            socket.emit('userRegisterd', {successOrNot: "false"});
+          }
+          else
+          {
+            socket.emit('userRegisterd', {successOrNot: "true"});
+          }
+        });
+      }
     });
-
-    if (userDidMatch == false)
-    {
-      
-      connection.query('INSERT INTO Users (Username,Password) VALUES ("' + userNameToLower + '","' + msg.password + '")',
-      function(error, result){
-        if (result == 0)
-        {
-          socket.emit('userRegisterd', {successOrNot: "false"});
-        }
-        else
-        {
-          socket.emit('userRegisterd', {successOrNot: "true"});
-        }
-      });
-    }
   });
 });
 
