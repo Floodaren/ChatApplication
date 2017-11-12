@@ -6,7 +6,7 @@ var app = express();
 var app2 = require('express')();
 var http = require('http').Server(app2);
 var io = require('socket.io')(http);
-
+var userNames = [];
 
 app.listen(3030, function () {
   console.log('Express server is online on port 3030!');
@@ -17,9 +17,12 @@ http.listen(3000, function(){
 });
 
 io.on('connection', function(socket){
+  console.log(socket.client.id);
+  //-----------------------------------------------------
   socket.on('disconnect', function(){
     io.sockets.emit('disconnect', {messageToEveryone: "A user has disconnected"})
   });
+  //-----------------------------------------------------
   socket.on('loginUser', function(msg)
   {
     
@@ -36,9 +39,11 @@ io.on('connection', function(socket){
       }
     }); 
   });
+  //-----------------------------------------------------
   socket.on('sendMessage', function(msg){
     io.sockets.emit('recieveChatMessages', {messageToEveryone: msg.message, messageUsername: msg.username});
   });
+  //-----------------------------------------------------
   socket.on('registerUser', function(msg){
     var userNameToLower = msg.username.toLowerCase();
     userDidMatch = false;
@@ -68,6 +73,11 @@ io.on('connection', function(socket){
       }
     });
   });
+  //-----------------------------------------------------
+  socket.on('showUsers',function(){  
+    io.sockets.emit('returnOnlineUsers', {onlineUsers: Object.keys(io.sockets.sockets)});
+  });
+  //-----------------------------------------------------
 });
 
 var connection = mysql.createConnection({

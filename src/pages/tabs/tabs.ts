@@ -4,6 +4,7 @@ import { ContactPage } from '../contact/contact';
 import { HomePage } from '../home/home';
 import { LoginPage } from '../login/login';
 import { RegisterUserPage } from '../register-user/register-user';
+import { OnlineUsersPage } from '../online-users/online-users';
 import { Storage } from '@ionic/storage';
 
 @Component({
@@ -18,6 +19,7 @@ export class TabsPage {
   tab3Root = ContactPage;
   tab4Root = LoginPage;
   tab5Root = RegisterUserPage;
+  tabs6Root = OnlineUsersPage;
 
   constructor(private storage: Storage) 
   {

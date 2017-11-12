@@ -3,6 +3,7 @@ import { NavController, Content } from 'ionic-angular';
 import { AlertController } from 'ionic-angular';
 import io from "socket.io-client";
 import { Storage } from '@ionic/storage';
+import { LoginPage } from '../login/login';
 
 @Component({
   selector: 'page-home',
@@ -13,19 +14,19 @@ export class HomePage {
   message:any
   messages:any = [];
   username:any;
-  socket = io("http://localhost:3000");
+  socket:any;
   constructor(public navCtrl: NavController, private storage: Storage, private alertCtrl: AlertController) {
+  }
 
+  ionViewDidEnter()
+  {
+    this.socket = io("http://localhost:3000");
     this.socket.on('recieveChatMessages', function(data)
     {
       this.messages.push(data);
       //this.content.scrollToBottom();   
     }.bind(this));
-
-    this.socket.on('disconnect', function(data){
-      console.log(data);
-      this.messages.push(data.messageToEveryone);
-    }.bind(this));
+    this.socket.emit('showUsers');
   }
 
   async submitMessage()
@@ -37,6 +38,7 @@ export class HomePage {
     }
     else 
     {
+      console.log(this.socket.id);
       this.socket.emit('sendMessage', {message: this.message, username: this.username});
       this.message = "";
       //this.content.scrollToBottom();   
@@ -50,6 +52,14 @@ export class HomePage {
     });
   }
 
+  ionViewDidLeave()
+  {
+    console.log(this.socket.id);
+    this.socket.disconnect();
+    this.socket.close(); 
+  }
+
+
   presentAlert() {
     let alert = this.alertCtrl.create({
       title: 'Inget meddelande',
@@ -61,32 +71,3 @@ export class HomePage {
   
 }
 
-    /*
-    Encrypt with SHA256 and the later check if both encrypted strings are equal.
-    var sha256 = CryptoJS.SHA256("hejsan");
-    var sha2562 = CryptoJS.SHA256("hejsadsan");
-    var matchorNot:boolean = false;
-    
-    for (var i = 0; i<sha256.words.length;i++)
-    {
-      if (sha256.words[i] == sha2562.words[i])
-      {
-        matchorNot = true;
-      }
-      else 
-      {
-        matchorNot = false;
-      }
-    }
-    if (matchorNot == true)
-    {
-      console.log("inloggad");
-    }
-    */
-
-    /*
-    Encrypt with AES, decrypt and get the decrypted message.
-    var hejsan = CryptoJS.AES.encrypt('haha',"myKey");
-    var decryptText =CryptoJS.AES.decrypt(hejsan.toString(), 'myKey');
-    this.x = decryptText.toString(CryptoJS.enc.Utf8)
-    */

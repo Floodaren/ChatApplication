@@ -14,15 +14,18 @@ import CryptoJS from 'crypto-js';
   templateUrl: 'login.html',
 })
 export class LoginPage {
-  socket = io("http://localhost:3000");
+  socket:any;
   username:any;
   password:any;
+  
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private app:App) {
+    
   }
 
   handleSubmit()
   {
+    this.socket =  io("http://localhost:3000");
     var encryptedPassword = CryptoJS.SHA256(this.password);
     var passwordToDb = "";
     encryptedPassword.words.forEach(element => {
@@ -58,6 +61,8 @@ export class LoginPage {
     });
     if (userEmail != undefined && userId != undefined)
     {
+      this.socket.disconnect();
+      this.socket.close(); 
       this.app.getRootNav().setRoot(TabsPage);
     }
   }
