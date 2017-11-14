@@ -18,15 +18,16 @@ export class HomePage {
   constructor(public navCtrl: NavController, private storage: Storage, private alertCtrl: AlertController) {
   }
 
-  ionViewDidEnter()
+  async ionViewDidEnter()
   {
-    this.socket = io("http://localhost:3000");
-    this.socket.on('recieveChatMessages', function(data)
+    this.socket =  await io("http://localhost:3000");
+    await this.socket.on('recieveChatMessages', function(data)
     {
       this.messages.push(data);
       //this.content.scrollToBottom();   
     }.bind(this));
-    this.socket.emit('showUsers');
+    await this.getUserName();
+    await this.socket.emit('showUsers', {userId: this.socket.id, userName: this.username});
   }
 
   async submitMessage()
@@ -38,7 +39,6 @@ export class HomePage {
     }
     else 
     {
-      console.log(this.socket.id);
       this.socket.emit('sendMessage', {message: this.message, username: this.username});
       this.message = "";
       //this.content.scrollToBottom();   
@@ -54,7 +54,6 @@ export class HomePage {
 
   ionViewDidLeave()
   {
-    console.log(this.socket.id);
     this.socket.disconnect();
     this.socket.close(); 
   }

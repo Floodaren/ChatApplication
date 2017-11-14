@@ -6,7 +6,9 @@ var app = express();
 var app2 = require('express')();
 var http = require('http').Server(app2);
 var io = require('socket.io')(http);
-var userNames = [];
+var onlineUsers = [];
+var firstOnlineUser = true;
+var userOnlineMatch = false;
 
 app.listen(3030, function () {
   console.log('Express server is online on port 3030!');
@@ -16,8 +18,8 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 
+
 io.on('connection', function(socket){
-  console.log(socket.client.id);
   //-----------------------------------------------------
   socket.on('disconnect', function(){
     io.sockets.emit('disconnect', {messageToEveryone: "A user has disconnected"})
@@ -34,7 +36,6 @@ io.on('connection', function(socket){
       }
       else
       {
-        console.log(result);
         socket.emit('loggedInOrNot', result); 
       }
     }); 
@@ -74,9 +75,39 @@ io.on('connection', function(socket){
     });
   });
   //-----------------------------------------------------
-  socket.on('showUsers',function(){  
-    io.sockets.emit('returnOnlineUsers', {onlineUsers: Object.keys(io.sockets.sockets)});
+  socket.on('showUsers',function(data){
+    if (firstOnlineUser == true)
+    {
+      onlineUsers.push(data);
+      firstOnlineUser = false;
+    }
+    else 
+    {
+      onlineUsers.forEach(element => {
+        if (data.userName == element.userName)
+        {
+          userOnlineMatch = true;
+        }
+      });
+
+      if (userOnlineMatch == true)
+      {
+        onlineUsers.forEach(element => {
+          if (data.userName == element.userName)
+          {
+            element.userId = data.userId;
+            userOnlineMatch = false;
+          }
+        });
+      }
+      else 
+      {
+        onlineUsers.push(data);
+      }
+    }
+    io.sockets.emit('returnOnlineUsers', {onlineUsers: onlineUsers});
   });
+  //Object.keys(io.sockets.sockets)
   //-----------------------------------------------------
 });
 

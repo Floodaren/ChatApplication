@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import io from "socket.io-client";
-
+import { Storage } from '@ionic/storage';
 
 @IonicPage()
 @Component({
@@ -11,21 +11,29 @@ import io from "socket.io-client";
 export class OnlineUsersPage {
   socket:any;
   onlineUsers:any = [];
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  username:any;
+  constructor(public navCtrl: NavController, public navParams: NavParams, private storage: Storage) {
 
   }
 
-  ionViewDidEnter() {
-    this.socket = io("http://localhost:3000");
-    this.socket.emit('showUsers');
-    this.socket.on('returnOnlineUsers', function(data){
+  async ionViewDidEnter() {
+    this.socket = await io("http://localhost:3000");
+    await this.getUserName();
+    await this.socket.emit('showUsers', {userId: this.socket.id, userName: this.username});
+    await this.socket.on('returnOnlineUsers', function(data){
       this.onlineUsers = [];
       data.onlineUsers.forEach(element => {
         this.onlineUsers.push(element);
       });
-      console.log(this.onlineUsers);
     }.bind(this));
     
+  }
+
+  async getUserName()
+  {
+    await this.storage.get('userName').then((val) => { 
+      this.username = val;
+    });
   }
 
   ionViewDidLeave()

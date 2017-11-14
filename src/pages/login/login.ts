@@ -17,7 +17,6 @@ export class LoginPage {
   socket:any;
   username:any;
   password:any;
-  
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private alertCtrl: AlertController, private storage: Storage, private app:App) {
     
